@@ -1,0 +1,82 @@
+---
+title: "Cure U01 qVOA figure"
+author: "Claire Levy"
+date: "June 22, 2016"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+This is a figure for the cure u01 grant application. We got the data from someone else, but their graph wasn't good so I am re-making it. They sent the data+graph+info all in one file so I took out just the data and put it in a .csv file to read into R.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+library(swarm)
+library(dplyr)
+library(stringr)
+
+#This is the data set with summarized data from each donor.
+all_donors_dat <- read.csv("qVOA figure/qVOA_figure_all_donors_data_only.csv")
+
+
+all_donors_plot<-ggplot(all_donors_dat, aes(x = "Donors", y = IUPM))+
+geom_point(position = position_swarm(0.07), size = 2)+
+labs(x = "")+
+scale_shape_manual(values = )
+
+ggsave("all_donors_plot.png", dpi = 600, height= 2, width = 3.5, units = "in")
+
+#this is the data set with "representative viral growth" from one of the donors: AB9105. "input" is # of CD4 cells, "p24" is ng/ml p24 from ELISA. if p24 = 0.01, it was below LOD.
+
+AB9105_dat<- read.csv("qVOA figure/qVOA_figure_AB9105_data_only.csv")
+
+
+AB9105_dat$Culture<- as.factor(AB9105_dat$Culture)
+
+
+#Here I am changing culture #'s 6, 7, 8, 10 to be 1,2,3,4,5 so that I can have the same colors on each of the facets. They are different because the # of input CD4 cells is different, but all are from the same pt and I don't think we need to compare bwtwn cultures. Thus the legend is probably not necessary
+
+
+AB9105_dat$Culture<-AB9105_dat$Culture%>%
+  str_replace("6","1")%>%
+  str_replace("7","2")%>%
+  str_replace("8","3")%>%
+  str_replace("9","4")%>%
+  str_replace("10","5")
+
+
+
+AB9105_plot <- ggplot(AB9105_dat, aes(x = Day, y = p24))+
+  geom_point(aes(color = Culture), size = 2)+
+  geom_line(aes(group = Culture, color = Culture),size = 0.8)+
+  scale_y_log10(breaks=c(0.1, 10, 1000),labels = c("0.1","10","1,000"))+
+labs(y = "p24 [ ng/ml ]", x = "Days in culture")+
+facet_wrap(~Input)+
+scale_color_brewer(type = "qual", palette = 6 )+
+theme(strip.text = element_text(size = 10))+
+guides(color = FALSE)
+
+ggsave("AB98105_plot.png", dpi = 600, height= 2, width = 3.5)
+
+
+
+
+#OR without colors
+
+AB9105_plot_black <-ggplot(AB9105_dat, aes(x = Day, y = p24))+
+  geom_point(aes(),size = 2)+
+  geom_line(aes(group = Culture),size = 0.8)+
+  scale_y_log10(breaks=c(0.1, 10, 1000),labels = c("0.1","10","1,000"))+
+labs(y = "p24 [ ng/ml ]", x = "Days in culture")+
+facet_wrap(~Input)+
+scale_color_brewer(type = "qual", palette = 6 )+
+theme(strip.text = element_text(size = 10))
+
+ggsave("AB98105_plot_black.png", dpi = 600, height= 2, width = 3.5)
+
+```
+
+
+
