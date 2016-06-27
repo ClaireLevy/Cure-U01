@@ -34,16 +34,16 @@ all_donors_dat<- all_donors_dat %>%
 
 
 all_donors_dat <- all_donors_dat %>%
-  mutate(strip_text = "15 HIV+ donors \n\ on suppressive ART")
+  mutate(strip_text = "14 HIV+ donors \n\ on suppressive ART")
 
 
 all_donors_plot<-ggplot(all_donors_dat, aes(x = "", y = IUPM))+
   
-geom_point(aes(shape = Detail),position = position_swarm(0.07), size = 2)+
+geom_point(aes(shape = Detail),position = position_swarm(0.07), size = 1.5)+
   
 labs(x = "") + 
   
-scale_shape_manual(values = c("Yes" = 17, "No" = 16))+
+scale_shape_manual(values = c("No" = 2, "Yes" = 16))+
 guides(shape = FALSE)+
   
 facet_wrap(~strip_text)+
@@ -54,9 +54,12 @@ theme(strip.text = element_text(size = 10), axis.ticks.x = element_blank())
 
 
 
-
-
 ggsave("all_donors_plot.png", dpi = 600, height= 2, width = 2, units = "in")
+
+
+
+
+
 
 
 
@@ -82,7 +85,7 @@ AB9105_dat$Culture<-AB9105_dat$Culture%>%
 
 
 AB9105_plot <- ggplot(AB9105_dat, aes(x = Day, y = p24))+
-  geom_point(aes(color = Culture), size = 2)+
+  geom_point(aes(color = Culture), size = 1.5)+
   geom_line(aes(group = Culture, color = Culture),size = 0.8)+
   scale_y_log10(breaks=c(0.1, 10, 1000),labels = c("0.1","10","1,000"))+
 labs(y = "p24 [ ng/ml ]", x = "Days in culture")+
