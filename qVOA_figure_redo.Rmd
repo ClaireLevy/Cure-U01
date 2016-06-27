@@ -21,12 +21,45 @@ library(stringr)
 all_donors_dat <- read.csv("qVOA figure/qVOA_figure_all_donors_data_only.csv")
 
 
-all_donors_plot<-ggplot(all_donors_dat, aes(x = "Donors", y = IUPM))+
-geom_point(position = position_swarm(0.07), size = 2)+
-labs(x = "")+
-scale_shape_manual(values = )
 
-ggsave("all_donors_plot.png", dpi = 600, height= 2, width = 3.5, units = "in")
+#in order to be able to make the shape of the plot depend on whether the donor is AB9105 or some other donor, I'm adding a column to indicate that so I can refer to it in the ggplot2 call
+
+
+
+all_donors_dat<- all_donors_dat %>%
+  mutate(Detail = ifelse(Donor == "AB9105", "Yes","No"))
+
+#also FH wants there to be a dark grey strip text title like for facetted plots. There isn't anything to facet on so I'll just make a column where all entries are the text I want in the strip and then facet on that to get the strip text
+
+
+
+all_donors_dat <- all_donors_dat %>%
+  mutate(strip_text = "15 HIV+ donors \n\ on suppressive ART")
+
+
+all_donors_plot<-ggplot(all_donors_dat, aes(x = "", y = IUPM))+
+  
+geom_point(aes(shape = Detail),position = position_swarm(0.07), size = 2)+
+  
+labs(x = "") + 
+  
+scale_shape_manual(values = c("Yes" = 17, "No" = 16))+
+guides(shape = FALSE)+
+  
+facet_wrap(~strip_text)+
+  
+scale_y_log10(breaks = c(0.1, 1, 10),limits = c(0.1,15), labels = c("0.1","1","10"))+
+  
+theme(strip.text = element_text(size = 10), axis.ticks.x = element_blank())
+
+
+
+
+
+ggsave("all_donors_plot.png", dpi = 600, height= 2, width = 2, units = "in")
+
+
+
 
 #this is the data set with "representative viral growth" from one of the donors: AB9105. "input" is # of CD4 cells, "p24" is ng/ml p24 from ELISA. if p24 = 0.01, it was below LOD.
 
