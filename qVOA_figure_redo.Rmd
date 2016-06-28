@@ -7,9 +7,11 @@ output:
     variant: markdown_github
 ---
 
-This is a figure for the cure u01 grant application. We got the data from someone else, but their graph wasn't good so I am re-making it. They sent the data+graph+info all in one file so I took out just the data and put it in a .csv file to read into R.
+These are figures for the cure u01 grant application. We got the data from someone else, but their graph wasn't good so I am re-making it. They sent the data+graph+info all in one file so I took out just the data and put it in a .csv file to read into R.
 
-```{r setup, include=FALSE}
+The first figure is data from all donors
+
+```{r, message = FALSE, warning=FALSE, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 library(ggplot2)
@@ -43,7 +45,7 @@ geom_point(aes(shape = Detail),position = position_swarm(0.07), size = 1.5)+
   
 labs(x = "") + 
   
-scale_shape_manual(values = c("No" = 2, "Yes" = 16))+
+scale_shape_manual(values = c("No" = 17, "Yes" = 1))+
 guides(shape = FALSE)+
   
 facet_wrap(~strip_text)+
@@ -58,13 +60,15 @@ ggsave("all_donors_plot.png", dpi = 600, height= 2, width = 2, units = "in")
 
 
 
+all_donors_plot
+
+```
 
 
+This is the data set with "representative viral growth" from one of the donors: AB9105. "input" is # of CD4 cells, "p24" is ng/ml p24 from ELISA. if p24 = 0.01, it was below LOD.
 
+```{r, message = FALSE, warning=FALSE, echo=FALSE}
 
-
-
-#this is the data set with "representative viral growth" from one of the donors: AB9105. "input" is # of CD4 cells, "p24" is ng/ml p24 from ELISA. if p24 = 0.01, it was below LOD.
 
 AB9105_dat<- read.csv("qVOA figure/qVOA_figure_AB9105_data_only.csv")
 
@@ -97,20 +101,8 @@ guides(color = FALSE)
 ggsave("AB98105_plot.png", dpi = 600, height= 2, width = 3.5)
 
 
+AB9105_plot
 
-
-#OR without colors
-
-AB9105_plot_black <-ggplot(AB9105_dat, aes(x = Day, y = p24))+
-  geom_point(aes(),size = 2)+
-  geom_line(aes(group = Culture),size = 0.8)+
-  scale_y_log10(breaks=c(0.1, 10, 1000),labels = c("0.1","10","1,000"))+
-labs(y = "p24 [ ng/ml ]", x = "Days in culture")+
-facet_wrap(~Input)+
-scale_color_brewer(type = "qual", palette = 6 )+
-theme(strip.text = element_text(size = 10))
-
-ggsave("AB98105_plot_black.png", dpi = 600, height= 2, width = 3.5)
 
 ```
 
