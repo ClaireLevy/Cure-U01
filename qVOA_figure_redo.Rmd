@@ -7,7 +7,7 @@ output:
     variant: markdown_github
 ---
 
-These are figures for the cure u01 grant application. We got the data from someone else, but their graph wasn't good so I am re-making it. They sent the data+graph+info all in one file so I took out just the data and put it in a .csv file to read into R.
+These are figures for the cure u01 grant application. We got the data from someone else, but their graph wasn't good so I am re-making it. They sent some data+graph+info in one file and some more data in another file, so I took out just the data and put it in a single .csv file to read into R.
 
 The first figure is data from all donors
 
@@ -20,7 +20,7 @@ library(dplyr)
 library(stringr)
 
 #This is the data set with summarized data from each donor.
-
+windowsFonts(Arial=windowsFont("Arial"))
 
 all_donors_dat <- read.csv("qVOA figure/qVOA_figure_all_donors_data_only.csv")
 
@@ -28,10 +28,21 @@ all_donors_dat <- read.csv("qVOA figure/qVOA_figure_all_donors_data_only.csv")
 
 #in order to be able to make the shape of the plot depend on whether the donor is AB9105 or some other donor, I'm adding a column to indicate that so I can refer to it in the ggplot2 call
 
-
-
 all_donors_dat<- all_donors_dat %>%
   mutate(Detail = ifelse(Donor == "AB9105", "Yes","No"))
+
+
+#I also want the points that are in both timepoints to have color and not the others so I'll make a color indicating that
+
+all_donors_dat <- all_donors_dat %>%
+  mutate(Repeat = ifelse(Donor == "SD9092", "SD9092",
+                         ifelse(Donor == "JH9194", "JH9194",
+                                ifelse(Donor == "GF8413","GF8413", "No Repeat"))))
+
+
+#Make the timepoints factors
+
+all_donors_dat$Timepoint <- as.factor(all_donors_dat$Timepoint)
 
 #also FH wants there to be a dark grey strip text title like for facetted plots. There isn't anything to facet on so I'll just make a column where all entries are the text I want in the strip and then facet on that to get the strip text
 
@@ -41,23 +52,27 @@ all_donors_dat <- all_donors_dat %>%
   mutate(strip_text = "14 HIV+ donors \n\ on suppressive ART")
 
 
-ggplot(all_donors_dat, aes(x= "", y = IUPM))+
+ggplot(all_donors_dat, aes(x = Timepoint, y = IUPM))+
   
-geom_point(aes(shape = Detail),position = position_swarm(0.07), size = 1.5)+
+  geom_point(aes(shape = Detail, color = Repeat), position = position_swarm(0.07), size = 1.5)+
   
-labs(y = "Infectious units per\nmillion CD4+ T cells") + 
+  labs(y = "Infectious units per\nmillion CD4+ T cells")+
   
-scale_shape_manual(values = c("No" = 17, "Yes" = 1))+
-guides(shape = FALSE)+
+  scale_shape_manual(values = c("No" = 17, "Yes" = 1))+
   
-facet_wrap(~strip_text)+
   
-scale_y_log10(breaks = c(0.1, 1, 10),limits = c(0.1,15), labels = c("0.1","1","10"))+
+  scale_color_manual(values = c("JH9194" = "#1b9e77", "SD9092" = "#d95f02", "GF8413" = "#7570b3", "No Repeat" = "black"))+
   
-theme(strip.text = element_text(size = 10),
+  guides(shape = FALSE, color = FALSE)+
+
+  
+  facet_wrap(~strip_text)+
+  
+  scale_y_log10(breaks = c(0.1, 1, 10),limits = c(0.1,15), labels = c("0.1","1","10"))+
+  
+  theme(strip.text = element_text(size = 10),
       axis.ticks.x = element_blank(),
-      axis.title.x = element_blank(),
-      axis.title.y = element_text(9))
+      axis.title.y = element_text(10))
 
 
 
