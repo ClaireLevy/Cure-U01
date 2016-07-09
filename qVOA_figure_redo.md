@@ -1,4 +1,4 @@
-These are figures for the cure u01 grant application. We got the data from someone else, but their graph wasn't good so I am re-making it. They sent the data+graph+info all in one file so I took out just the data and put it in a .csv file to read into R.
+These are figures for the cure u01 grant application. We got the data from someone else, but their graph wasn't good so I am re-making it. They sent some data+graph+info in one file and some more data in another file, so I took out just the data and put it in a single .csv file to read into R.
 
 The first figure is data from all donors
 

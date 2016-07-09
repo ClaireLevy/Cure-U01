@@ -56,12 +56,12 @@ ggplot(all_donors_dat, aes(x = Timepoint, y = IUPM))+
   
   geom_point(aes(shape = Detail, color = Repeat), position = position_swarm(0.07), size = 1.5)+
   
-  labs(y = "Infectious units per\nmillion CD4+ T cells")+
+  labs(y = "Infectious units per \nmillion CD4+ T cells") +
   
-  scale_shape_manual(values = c("No" = 17, "Yes" = 1))+
+  scale_shape_manual(values = c("No" = 17, "Yes" = 1)) +
   
   
-  scale_color_manual(values = c("JH9194" = "#1b9e77", "SD9092" = "#d95f02", "GF8413" = "#7570b3", "No Repeat" = "black"))+
+  scale_color_manual(values = c("JH9194" = "#ff7f00", "SD9092" = "#1b9e77", "GF8413" = "#e7298a", "No Repeat" = "black"))+
   
   guides(shape = FALSE, color = FALSE)+
 
@@ -80,7 +80,6 @@ ggsave("all_donors_plot.png", dpi = 600, height= 2, width = 2.2, units = "in")
 
 
 
-all_donors_plot
 
 ```
 
