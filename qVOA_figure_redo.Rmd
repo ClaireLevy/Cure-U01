@@ -1,10 +1,8 @@
 ---
 title: "Cure U01 qVOA figure"
-author: "Claire Levy"
-date: "June 22, 2016"
-output:
-  md_document:
-    variant: markdown_github
+author:
+date:
+output: github_document
 ---
 
 These are figures for the cure u01 grant application. We got the data from someone else, but their graph wasn't good so I am re-making it. They sent some data+graph+info in one file and some more data in another file, so I took out just the data and put it in a single .csv file to read into R.
@@ -32,7 +30,7 @@ all_donors_dat<- all_donors_dat %>%
   mutate(Detail = ifelse(Donor == "AB9105", "Yes","No"))
 
 
-#I also want the points that are in both timepoints to have color and not the others so I'll make a color indicating that
+#I also want the points that are in both Test.Runs to have color and not the others so I'll make a color indicating that
 
 all_donors_dat <- all_donors_dat %>%
   mutate(Repeat = ifelse(Donor == "SD9092", "SD9092",
@@ -40,9 +38,9 @@ all_donors_dat <- all_donors_dat %>%
                                 ifelse(Donor == "GF8413","GF8413", "No Repeat"))))
 
 
-#Make the timepoints factors
+#Make the Test.Runs factors
 
-all_donors_dat$Timepoint <- as.factor(all_donors_dat$Timepoint)
+all_donors_dat$Test.Run <- as.factor(all_donors_dat$Test.Run)
 
 #also FH wants there to be a dark grey strip text title like for facetted plots. There isn't anything to facet on so I'll just make a column where all entries are the text I want in the strip and then facet on that to get the strip text
 
@@ -52,11 +50,11 @@ all_donors_dat <- all_donors_dat %>%
   mutate(strip_text = "14 HIV+ donors \n\ on suppressive ART")
 
 
-ggplot(all_donors_dat, aes(x = Timepoint, y = IUPM))+
+ggplot(all_donors_dat, aes(x = Test.Run, y = IUPM))+
   
   geom_point(aes(shape = Detail, color = Repeat), position = position_swarm(0.07), size = 1.5)+
   
-  labs(y = "Infectious units per \nmillion CD4+ T cells") +
+  labs(y = "Infectious units per \nmillion CD4+ T cells", x = "Test Run") +
   
   scale_shape_manual(values = c("No" = 17, "Yes" = 1)) +
   
